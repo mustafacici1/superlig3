@@ -142,7 +142,6 @@ window.addEventListener('DOMContentLoaded', () => {
     const fn = ref.on('value', snap => {
       const data = snap.val();
       if (!data) return;
-      // Oyuna geç
       if (data.player1 && data.player2) showScreen('game');
       updateDisplay(data);
     });
@@ -162,6 +161,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // --- Ekranı Güncelle ---
   function updateDisplay(data) {
+    // Güvenlik: data.answers varsa yoksa boş obje
+    const answers = data.answers || { first: null, second: null };
+
     // İsimler & skorlar
     elems.player1Name.textContent = data.player1.nickname;
     elems.player2Name.textContent = data.player2.nickname;
@@ -173,13 +175,13 @@ window.addEventListener('DOMContentLoaded', () => {
     elems.player2Display.textContent = data.currentQuestion.player2;
 
     // Şıklar
-    const bothAnswered = data.answers.first && data.answers.second;
+    const bothAnswered = answers.first && answers.second;
     elems.optionBtns.forEach((btn, idx) => {
       btn.textContent = data.currentQuestion.options[idx];
       btn.disabled = bothAnswered;
       btn.classList.remove('correct', 'incorrect');
-      // Eğer bir cevap verilmişse doğruyu işaretle
-      if (data.answers.first || data.answers.second) {
+      // Doğru cevabı göster
+      if (answers.first || answers.second) {
         if (idx === data.currentQuestion.correctIndex) {
           btn.classList.add('correct');
         }
@@ -187,8 +189,8 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     // Geri bildirim
-    if (data.answers.first) {
-      const ans = data.answers.first;
+    if (answers.first) {
+      const ans = answers.first;
       const name = ans.id === data.player1.id
         ? data.player1.nickname
         : data.player2.nickname;
@@ -208,7 +210,10 @@ window.addEventListener('DOMContentLoaded', () => {
     const data = snap.val();
     if (!data) return;
 
-    const target = data.answers.first ? 'second' : 'first';
+    // Yine data.answers güvenlik
+    const answers = data.answers || { first: null, second: null };
+    const target = answers.first ? 'second' : 'first';
+
     // Cevabı kaydet
     await ref.child(`answers/${target}`).set({
       id: gameState.playerId,
