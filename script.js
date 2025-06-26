@@ -52,7 +52,7 @@ window.addEventListener('DOMContentLoaded', () => {
     player2Score:   document.getElementById('player2Score'),
     player1Display: document.getElementById('player1Display'),
     player2Display: document.getElementById('player2Display'),
-    optionBtns:     Array.from(document.querySelectorAll('.option-btn')),  // burada 5 olması lazım
+    optionBtns:     Array.from(document.querySelectorAll('.option-btn')),  // 5 buton
     feedback:       document.getElementById('feedback'),
     playAgainBtn:   document.getElementById('playAgainBtn'),
     homeBtn:        document.getElementById('homeBtn')
@@ -63,6 +63,7 @@ window.addEventListener('DOMContentLoaded', () => {
   async function loadPlayerData() {
     try {
       const res = await fetch('./superlig_oyuncular.json');
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const raw = await res.json();
       gameState.playerData = raw
         .map(p => {
@@ -70,6 +71,7 @@ window.addEventListener('DOMContentLoaded', () => {
           if (p.isim && Array.isArray(p.takimlar)) {
             return { name: p.isim, teams_history: p.takimlar.map(t=>({team:t})) };
           }
+          console.warn('Bilinmeyen format:', p);
           return null;
         })
         .filter(Boolean);
@@ -117,7 +119,7 @@ window.addEventListener('DOMContentLoaded', () => {
     return generateQuestion();
   }
 
-  // Presence & Matchmaking
+  // Presence & matchmaking
   function setupPresence(nick){
     gameState.playerId=genId();
     const ref=db.ref(`online/${gameState.playerId}`);
@@ -130,12 +132,12 @@ window.addEventListener('DOMContentLoaded', () => {
       const c=snap.val()?Object.keys(snap.val()).length:0;
       elements.onlineCount.textContent=c;
       elements.searchingTitle.textContent= c<=1?'🔍 Bekleniyor':c===2?'🎯 Bulundu':'🔍 Bekleniyor';
-      elements.waitingMessage.textContent= c<=1?'Yok':c===2?'Hazır':'Aranıyor';
+      elements.waitingMessage.textContent= c<=1?'Bekleyen yok...':c===2?'Hazır':'Aranıyor';
     });
     gameState.listeners.push({ref,fn,event:'value'});
   }
 
-  // Oyun dinle ve göster
+  // Oyun dinle & göster
   function listenGame(gid){
     const ref=db.ref(`games/${gid}`);
     const fn=ref.on('value',snap=>{
@@ -147,73 +149,103 @@ window.addEventListener('DOMContentLoaded', () => {
 
   function updateDisplay(D){
     const q=D.currentQuestion;
-    elements.player1Name.textContent=D.player1.nickname;
-    elements.player2Name.textContent=D.player2.nickname;
-    elements.player1Score.textContent=D.scores.player1;
-    elements.player2Score.textContent=D.scores.player2;
-    elements.player1Display.textContent=q.player1;
-    elements.player2Display.textContent=q.player2;
+    elements.player1Name.textContent  = D.player1.nickname;
+    elements.player2Name.textContent  = D.player2.nickname;
+    elements.player1Score.textContent = D.scores.player1;
+    elements.player2Score.textContent = D.scores.player2;
+    elements.player1Display.textContent = q.player1;
+    elements.player2Display.textContent = q.player2;
 
-    // Butonları mutlaka resetle
-    elements.optionBtns.forEach((btn,i)=>{
+    // Butonları resetle & yeniden bağla
+    elements.optionBtns.forEach((oldBtn, i) => {
+      // Klonla ve replace et
+      const btn = oldBtn.cloneNode(true);
+      oldBtn.parentNode.replaceChild(btn, oldBtn);
+
+      // Metni ayarla ve aktifleştir
       btn.textContent = q.options[i] || '---';
       btn.disabled = false;
-      btn.classList.add('option-btn');
+      btn.removeAttribute('disabled');
+      btn.classList.remove('disabled');
+
+      // Yeni listener
+      btn.addEventListener('click', () => {
+        console.log(`Buton ${i} tıklandı!`);
+        selectAnswer(i);
+      });
     });
-    elements.feedback.textContent='';
+
+    // feedback temizle
+    elements.feedback.textContent = '';
   }
 
   async function selectAnswer(idx){
-    const ref=db.ref(`games/${gameState.gameId}`);
-    const snap=await ref.once('value');
-    const D=snap.val(); if(!D||D.answers.first) return;
-    await ref.child('answers/first').set({id:gameState.playerId,idx});
-    const ok= idx===D.currentQuestion.correctIndex;
-    const S={...D.scores};
-    if(gameState.playerId===D.player1.id) S.player1+=ok?1:-1;
-    else                                 S.player2+=ok?1:-1;
+    console.log('selectAnswer çağrıldı, idx =', idx);
+    const ref = db.ref(`games/${gameState.gameId}`);
+    const snap = await ref.once('value');
+    const D = snap.val();
+    if (!D) return console.warn('Oyun verisi yok');
+    if (D.answers.first) return console.warn('Zaten cevaplandı');
+
+    await ref.child('answers/first').set({id:gameState.playerId, idx});
+
+    // Butonları kilitle
+    document.querySelectorAll('.option-btn').forEach(b => {
+      b.disabled = true;
+      b.setAttribute('disabled','true');
+      b.classList.add('disabled');
+    });
+
+    // Puan güncelle
+    const ok = idx === D.currentQuestion.correctIndex;
+    const S = {...D.scores};
+    if (gameState.playerId === D.player1.id) S.player1 += ok?1:-1;
+    else                                   S.player2 += ok?1:-1;
     await ref.child('scores').set(S);
 
-    // Hepsini kilitle
-    elements.optionBtns.forEach(b=>b.disabled=true);
+    // Geri bildirim
+    const who = (gameState.playerId === D.player1.id ? D.player1.nickname : D.player2.nickname);
+    elements.feedback.textContent = 
+      `${who} seçti: ${D.currentQuestion.options[idx]}. ${ok?'✅ Doğru':'❌ Yanlış'}`;
 
-    const who = (D.player1.id===gameState.playerId?D.player1.nickname:D.player2.nickname);
-    elements.feedback.textContent=`${who} seçti: ${D.currentQuestion.options[idx]}. ${ok?'✅ Doğru':'❌ Yanlış'}`;
-
-    setTimeout(()=>ref.update({
-      currentQuestion:generateQuestion(),
-      answers:{first:null}
-    }),2000);
+    // Yeni soruya geç
+    setTimeout(() => {
+      ref.update({
+        currentQuestion: generateQuestion(),
+        answers: { first: null },
+        lastActivity: firebase.database.ServerValue.TIMESTAMP
+      });
+    }, 2000);
   }
 
   async function joinGame(){
-    const nick=elements.nicknameInput.value.trim();
+    const nick = elements.nicknameInput.value.trim();
     if(!nick) return alert('Takma ad gir');
     await loadPlayerData();
     setupPresence(nick);
     listenOnline();
 
-    const W=db.ref('waiting');
-    const snap=await W.once('value');
-    const wait=snap.val()||{};
+    const W = db.ref('waiting');
+    const snap = await W.once('value');
+    const wait = snap.val()||{};
     if(Object.keys(wait).length){
-      const gid=Object.keys(wait)[0], G=wait[gid];
+      const gid = Object.keys(wait)[0], G = wait[gid];
       await W.child(gid).remove();
-      const active={
-        player1:G.player1,
-        player2:{id:gameState.playerId,nickname:nick},
-        scores:{player1:0,player2:0},
-        currentQuestion:generateQuestion(),
-        answers:{first:null}
+      const active = {
+        player1: G.player1,
+        player2: {id:gameState.playerId, nickname: nick},
+        scores: {player1:0, player2:0},
+        currentQuestion: generateQuestion(),
+        answers: { first: null }
       };
-      gameState.gameId=gid;
+      gameState.gameId = gid;
       await db.ref(`games/${gid}`).set(active);
       listenGame(gid);
       showScreen('game');
     } else {
-      const gid=genId();
-      await W.child(gid).set({player1:{id:gameState.playerId,nickname:nick}});
-      gameState.gameId=gid;
+      const gid = genId();
+      gameState.gameId = gid;
+      await W.child(gid).set({ player1: {id:gameState.playerId, nickname: nick} });
       listenGame(gid);
       showScreen('waiting');
     }
@@ -224,17 +256,16 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   // Event’ler
-  elements.joinGameBtn.addEventListener('click',joinGame);
-  elements.cancelWaitBtn.addEventListener('click',()=>{
+  elements.joinGameBtn.addEventListener('click', joinGame);
+  elements.cancelWaitBtn.addEventListener('click', () => {
     db.ref(`waiting/${gameState.gameId}`).remove();
     cleanup();
     showScreen('nickname');
   });
-  elements.playAgainBtn.addEventListener('click',()=>location.reload());
-  elements.homeBtn.addEventListener('click',()=>location.reload());
-  elements.optionBtns.forEach((b,i)=>b.addEventListener('click',()=>selectAnswer(i)));
+  elements.playAgainBtn.addEventListener('click', () => location.reload());
+  elements.homeBtn.addEventListener('click', () => location.reload());
 
-  // Başlangıç ekranı
+  // Başlangıç
   loadPlayerData();
   showScreen('nickname');
 });
