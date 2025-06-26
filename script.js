@@ -10,10 +10,8 @@ async function loadPlayerData() {
     // Eğer JSON öğeleri { isim, takimlar } formatındaysa, dönüştürelim
     gameState.playerData = rawData.map(p => {
       if (p.name && p.teams_history) {
-        // Zaten doğru formatta
-        return p;
+        return p; // zaten doğru formatta
       } else if (p.isim && Array.isArray(p.takimlar)) {
-        // eski formatı dönüştür
         return {
           name: p.isim,
           teams_history: p.takimlar.map(t => ({ team: t }))
@@ -26,7 +24,7 @@ async function loadPlayerData() {
 
   } catch (err) {
     console.error('superlig_oyuncular.json yüklenirken hata:', err);
-    alert('Oyun verisi yüklenemedi. Lütfen GitHub Pages veya başka bir HTTP sunucusunda çalıştırın.');
+    alert('Oyun verisi yüklenemedi. Lütfen HTTP sunucusu üzerinden çalıştırın.');
   }
 }
 
@@ -52,7 +50,6 @@ const gameState = {
   gameId: null,
   playerData: [],
   currentQuestion: null,
-  gameStarted: false,
   presenceRef: null,
   listeners: []
 };
@@ -60,29 +57,27 @@ const gameState = {
 // DOM öğeleri
 const screens = {
   nickname: document.getElementById('nicknameScreen'),
-  waiting: document.getElementById('waitingScreen'),
-  game: document.getElementById('gameScreen'),
-  result: document.getElementById('resultScreen')
+  waiting:  document.getElementById('waitingScreen'),
+  game:     document.getElementById('gameScreen'),
+  result:   document.getElementById('resultScreen')
 };
 const elements = {
-  nicknameInput: document.getElementById('nicknameInput'),
-  joinGameBtn: document.getElementById('joinGameBtn'),
-  cancelWaitBtn: document.getElementById('cancelWaitBtn'),
-  onlineCount: document.getElementById('onlineCount'),
-  searchingTitle: document.getElementById('searchingTitle'),
-  waitingMessage: document.getElementById('waitingMessage'),
-  player1Name: document.getElementById('player1Name'),
-  player2Name: document.getElementById('player2Name'),
-  player1Score: document.getElementById('player1Score'),
-  player2Score: document.getElementById('player2Score'),
-  player1Display: document.getElementById('player1Display'),
-  player2Display: document.getElementById('player2Display'),
-  optionBtns: document.querySelectorAll('.option-btn'),
-  feedback: document.getElementById('feedback'),
-  resultTitle: document.getElementById('resultTitle'),
-  finalScores: document.getElementById('finalScores'),
-  playAgainBtn: document.getElementById('playAgainBtn'),
-  homeBtn: document.getElementById('homeBtn')
+  nicknameInput:   document.getElementById('nicknameInput'),
+  joinGameBtn:     document.getElementById('joinGameBtn'),
+  cancelWaitBtn:   document.getElementById('cancelWaitBtn'),
+  onlineCount:     document.getElementById('onlineCount'),
+  searchingTitle:  document.getElementById('searchingTitle'),
+  waitingMessage:  document.getElementById('waitingMessage'),
+  player1Name:     document.getElementById('player1Name'),
+  player2Name:     document.getElementById('player2Name'),
+  player1Score:    document.getElementById('player1Score'),
+  player2Score:    document.getElementById('player2Score'),
+  player1Display:  document.getElementById('player1Display'),
+  player2Display:  document.getElementById('player2Display'),
+  optionBtns:      Array.from(document.querySelectorAll('.option-btn')), // *5* buton
+  feedback:        document.getElementById('feedback'),
+  playAgainBtn:    document.getElementById('playAgainBtn'),
+  homeBtn:         document.getElementById('homeBtn')
 };
 
 // Yardımcı fonksiyonlar
@@ -106,34 +101,34 @@ function getAllTeams() {
     )
   );
 }
+function shuffle(arr) {
+  return arr.sort(() => Math.random() - 0.5);
+}
 function generateQuestion() {
   for (let i = 0; i < 100; i++) {
-    const p1 = gameState.playerData[
-      Math.floor(Math.random() * gameState.playerData.length)
-    ];
-    const p2 = gameState.playerData[
-      Math.floor(Math.random() * gameState.playerData.length)
-    ];
+    const p1 = gameState.playerData[Math.floor(Math.random() * gameState.playerData.length)];
+    const p2 = gameState.playerData[Math.floor(Math.random() * gameState.playerData.length)];
     if (!p1 || !p2 || p1.name === p2.name) continue;
+
     const commons = findCommonTeams(p1, p2);
-    if (!commons.length) continue;
+    if (commons.length === 0) continue;
 
     const correctTeam = commons[Math.floor(Math.random() * commons.length)];
-    const wrong = getAllTeams()
-      .filter(t => !commons.includes(t))
-      .sort(() => 0.5 - Math.random())
-      .slice(0, 4);
+    const wrongs = shuffle(
+      getAllTeams().filter(t => t !== correctTeam && !commons.includes(t))
+    ).slice(0, 4);
 
-    const options = [correctTeam, ...wrong].sort(() => 0.5 - Math.random());
+    const options = shuffle([correctTeam, ...wrongs]);
     return {
       player1: p1.name,
       player2: p2.name,
-      options,
+      options,                // 5 öğe
       correctTeam,
       correctIndex: options.indexOf(correctTeam)
     };
   }
-  return null;
+  // hiçe denk gelirse yeniden başlat
+  return generateQuestion();
 }
 
 // Çevrimiçi varlık ekleme
@@ -177,14 +172,12 @@ async function joinGame() {
   listenOnline();
 
   const waitRef = database.ref('waitingGames');
-  const waitSnap = await waitRef.once('value');
-  const waiting = waitSnap.val() || {};
+  const snap = await waitRef.once('value');
+  const waiting = snap.val() || {};
 
   if (Object.keys(waiting).length) {
     // Katılma
     const gid = Object.keys(waiting)[0];
-    gameState.isPlayer1 = false;
-    gameState.gameId = gid;
     const gameData = waiting[gid];
     await waitRef.child(gid).remove();
 
@@ -193,9 +186,7 @@ async function joinGame() {
       player2: { id: gameState.playerId, nickname },
       scores: { player1: 0, player2: 0 },
       currentQuestion: generateQuestion(),
-      answers: { first: null },
-      gameStarted: true,
-      lastActivity: firebase.database.ServerValue.TIMESTAMP
+      answers: { first: null }
     };
     await database.ref(`activeGames/${gid}`).set(active);
     listenToGame(gid);
@@ -203,8 +194,6 @@ async function joinGame() {
   } else {
     // Oluşturma
     const gid = generateId();
-    gameState.isPlayer1 = true;
-    gameState.gameId = gid;
     await waitRef.child(gid).set({
       player1: { id: gameState.playerId, nickname },
       createdAt: firebase.database.ServerValue.TIMESTAMP
@@ -243,33 +232,17 @@ function updateDisplay(data) {
   elements.player1Score.textContent = data.scores.player1;
   elements.player2Score.textContent = data.scores.player2;
 
-  // Soru ve butonlar
+  // Soruyu göster
   elements.player1Display.textContent = data.currentQuestion.player1;
   elements.player2Display.textContent = data.currentQuestion.player2;
-  data.currentQuestion.options.forEach((opt, i) => {
-    const btn = elements.optionBtns[i];
-    btn.textContent = opt;
-    btn.disabled = Boolean(data.answers.first);
+
+  // Butonları resetle & etkinleştir
+  elements.optionBtns.forEach((btn, i) => {
+    btn.textContent = data.currentQuestion.options[i] || '';
+    btn.disabled = false;
     btn.className = 'option-btn';
   });
-
-  // Cevap gösterimi
-  if (data.answers.first) {
-    const { playerId, index } = data.answers.first;
-    const firstName =
-      playerId === data.player1.id
-        ? data.player1.nickname
-        : data.player2.nickname;
-    const chosen = data.currentQuestion.options[index];
-    const correct = chosen === data.currentQuestion.correctTeam;
-    elements.feedback.textContent =
-      `${firstName} seçti: ${chosen}. ${correct ? '✅ Doğru!' : '❌ Yanlış!'}`;
-    elements.feedback.className = correct
-      ? 'feedback correct'
-      : 'feedback incorrect';
-  } else {
-    elements.feedback.textContent = '';
-  }
+  elements.feedback.textContent = '';
 }
 
 async function selectAnswer(idx) {
@@ -294,7 +267,12 @@ async function selectAnswer(idx) {
   }
   await gRef.child('scores').set(newScores);
 
-  // Yeni soru
+  // Geri bildirimi göster
+  const first = data.player1.id === gameState.playerId ? data.player1 : data.player2;
+  elements.feedback.textContent =
+    `${first.nickname} seçti: ${data.currentQuestion.options[idx]}. ${correct ? '✅ Doğru!' : '❌ Yanlış!'}`;
+
+  // Yeni soruyu 2s sonra gönder
   setTimeout(async () => {
     await gRef.update({
       currentQuestion: generateQuestion(),
