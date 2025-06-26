@@ -1,0 +1,972 @@
+[
+  {
+    "isim": "Serdar Özkan",
+    "takimlar": [
+      "Kayserispor",
+      "Başakşehir",
+      "Fenerbahçe",
+      "Beşiktaş"
+    ]
+  },
+  {
+    "isim": "İshak Çakmak",
+    "takimlar": [
+      "Kayserispor",
+      "Bursaspor",
+      "Sivasspor",
+      "Başakşehir",
+      "Fenerbahçe",
+      "Trabzonspor"
+    ]
+  },
+  {
+    "isim": "Yekta Kurtuluş",
+    "takimlar": [
+      "Antalyaspor",
+      "Başakşehir",
+      "Beşiktaş",
+      "Bursaspor",
+      "Galatasaray",
+      "Trabzonspor"
+    ]
+  },
+  {
+    "isim": "Erhan Güven",
+    "takimlar": [
+      "Başakşehir",
+      "Antalyaspor",
+      "Konyaspor",
+      "Sivasspor",
+      "Galatasaray",
+      "Beşiktaş"
+    ]
+  },
+  {
+    "isim": "Serdar Kurtuluş",
+    "takimlar": [
+      "Konyaspor",
+      "Antalyaspor",
+      "Sivasspor",
+      "Fenerbahçe",
+      "Başakşehir",
+      "Kayserispor"
+    ]
+  },
+  {
+    "isim": "Bekir İrtegün",
+    "takimlar": [
+      "Sivasspor",
+      "Konyaspor",
+      "Başakşehir",
+      "Beşiktaş",
+      "Trabzonspor",
+      "Antalyaspor"
+    ]
+  },
+  {
+    "isim": "Uğur Boral",
+    "takimlar": [
+      "Sivasspor",
+      "Bursaspor",
+      "Beşiktaş"
+    ]
+  },
+  {
+    "isim": "Ceyhun Gülselam",
+    "takimlar": [
+      "Beşiktaş",
+      "Sivasspor",
+      "Konyaspor",
+      "Başakşehir",
+      "Trabzonspor",
+      "Fenerbahçe"
+    ]
+  },
+  {
+    "isim": "Barış Özbek",
+    "takimlar": [
+      "Trabzonspor",
+      "Kayserispor",
+      "Beşiktaş",
+      "Galatasaray"
+    ]
+  },
+  {
+    "isim": "Aydın Yılmaz",
+    "takimlar": [
+      "Sivasspor",
+      "Konyaspor",
+      "Beşiktaş"
+    ]
+  },
+  {
+    "isim": "Ahmet İlhan Özek",
+    "takimlar": [
+      "Beşiktaş",
+      "Sivasspor",
+      "Fenerbahçe"
+    ]
+  },
+  {
+    "isim": "Abdülkadir Kayalı",
+    "takimlar": [
+      "Bursaspor",
+      "Sivasspor",
+      "Trabzonspor",
+      "Fenerbahçe"
+    ]
+  },
+  {
+    "isim": "Hakan Aslantaş",
+    "takimlar": [
+      "Beşiktaş",
+      "Fenerbahçe",
+      "Kayserispor",
+      "Bursaspor"
+    ]
+  },
+  {
+    "isim": "Mehmet Yıldız",
+    "takimlar": [
+      "Kayserispor",
+      "Antalyaspor",
+      "Fenerbahçe",
+      "Trabzonspor",
+      "Beşiktaş",
+      "Galatasaray"
+    ]
+  },
+  {
+    "isim": "Ali Tandoğan",
+    "takimlar": [
+      "Galatasaray",
+      "Kayserispor",
+      "Başakşehir",
+      "Sivasspor",
+      "Antalyaspor"
+    ]
+  },
+  {
+    "isim": "Eren Güngör",
+    "takimlar": [
+      "Bursaspor",
+      "Konyaspor",
+      "Başakşehir",
+      "Sivasspor"
+    ]
+  },
+  {
+    "isim": "Veysel Sarı",
+    "takimlar": [
+      "Başakşehir",
+      "Konyaspor",
+      "Kayserispor",
+      "Galatasaray"
+    ]
+  },
+  {
+    "isim": "Okan Alkan",
+    "takimlar": [
+      "Beşiktaş",
+      "Sivasspor",
+      "Fenerbahçe"
+    ]
+  },
+  {
+    "isim": "Uğur İnceman",
+    "takimlar": [
+      "Fenerbahçe",
+      "Trabzonspor",
+      "Galatasaray",
+      "Konyaspor",
+      "Sivasspor"
+    ]
+  },
+  {
+    "isim": "Tayfun Cora",
+    "takimlar": [
+      "Kayserispor",
+      "Trabzonspor",
+      "Beşiktaş",
+      "Sivasspor",
+      "Galatasaray"
+    ]
+  },
+  {
+    "isim": "Zafer Yelen",
+    "takimlar": [
+      "Sivasspor",
+      "Trabzonspor",
+      "Galatasaray"
+    ]
+  },
+  {
+    "isim": "Okan Koç",
+    "takimlar": [
+      "Bursaspor",
+      "Antalyaspor",
+      "Trabzonspor",
+      "Beşiktaş"
+    ]
+  },
+  {
+    "isim": "Mehmet Eren Boyraz",
+    "takimlar": [
+      "Konyaspor",
+      "Fenerbahçe",
+      "Galatasaray"
+    ]
+  },
+  {
+    "isim": "Gökhan Ünal",
+    "takimlar": [
+      "Fenerbahçe",
+      "Sivasspor",
+      "Trabzonspor",
+      "Bursaspor",
+      "Başakşehir",
+      "Kayserispor"
+    ]
+  },
+  {
+    "isim": "Fatih Tekke",
+    "takimlar": [
+      "Sivasspor",
+      "Trabzonspor",
+      "Konyaspor",
+      "Başakşehir",
+      "Bursaspor"
+    ]
+  },
+  {
+    "isim": "Aykut Demir",
+    "takimlar": [
+      "Başakşehir",
+      "Beşiktaş",
+      "Konyaspor"
+    ]
+  },
+  {
+    "isim": "Muhammet Demir",
+    "takimlar": [
+      "Antalyaspor",
+      "Fenerbahçe",
+      "Kayserispor",
+      "Sivasspor",
+      "Beşiktaş",
+      "Başakşehir"
+    ]
+  },
+  {
+    "isim": "Erman Kılıç",
+    "takimlar": [
+      "Kayserispor",
+      "Beşiktaş",
+      "Fenerbahçe",
+      "Sivasspor",
+      "Galatasaray"
+    ]
+  },
+  {
+    "isim": "Serkan Balcı",
+    "takimlar": [
+      "Trabzonspor",
+      "Kayserispor",
+      "Bursaspor",
+      "Konyaspor"
+    ]
+  },
+  {
+    "isim": "İbrahim Kaş",
+    "takimlar": [
+      "Beşiktaş",
+      "Fenerbahçe",
+      "Başakşehir",
+      "Trabzonspor",
+      "Antalyaspor",
+      "Bursaspor"
+    ]
+  },
+  {
+    "isim": "Cihan Haspolatlı",
+    "takimlar": [
+      "Beşiktaş",
+      "Trabzonspor",
+      "Antalyaspor"
+    ]
+  },
+  {
+    "isim": "Murat Ceylan",
+    "takimlar": [
+      "Bursaspor",
+      "Antalyaspor",
+      "Beşiktaş",
+      "Başakşehir",
+      "Konyaspor",
+      "Trabzonspor"
+    ]
+  },
+  {
+    "isim": "Murat Akın",
+    "takimlar": [
+      "Konyaspor",
+      "Sivasspor",
+      "Bursaspor",
+      "Antalyaspor"
+    ]
+  },
+  {
+    "isim": "Umut Gündoğan",
+    "takimlar": [
+      "Bursaspor",
+      "Kayserispor",
+      "Konyaspor",
+      "Başakşehir",
+      "Fenerbahçe"
+    ]
+  },
+  {
+    "isim": "Mert Nobre",
+    "takimlar": [
+      "Antalyaspor",
+      "Sivasspor",
+      "Trabzonspor",
+      "Kayserispor",
+      "Fenerbahçe",
+      "Beşiktaş"
+    ]
+  },
+  {
+    "isim": "Oumar Niasse",
+    "takimlar": [
+      "Bursaspor",
+      "Başakşehir",
+      "Galatasaray",
+      "Beşiktaş",
+      "Kayserispor",
+      "Antalyaspor"
+    ]
+  },
+  {
+    "isim": "Souleymane Youla",
+    "takimlar": [
+      "Fenerbahçe",
+      "Antalyaspor",
+      "Beşiktaş",
+      "Bursaspor"
+    ]
+  },
+  {
+    "isim": "Djalma Campos",
+    "takimlar": [
+      "Konyaspor",
+      "Fenerbahçe",
+      "Başakşehir",
+      "Trabzonspor"
+    ]
+  },
+  {
+    "isim": "Isaac Promise",
+    "takimlar": [
+      "Başakşehir",
+      "Galatasaray",
+      "Antalyaspor",
+      "Trabzonspor",
+      "Beşiktaş"
+    ]
+  },
+  {
+    "isim": "Joseph Boum",
+    "takimlar": [
+      "Beşiktaş",
+      "Başakşehir",
+      "Sivasspor",
+      "Galatasaray"
+    ]
+  },
+  {
+    "isim": "Jerry Akaminko",
+    "takimlar": [
+      "Fenerbahçe",
+      "Galatasaray",
+      "Antalyaspor",
+      "Sivasspor",
+      "Konyaspor",
+      "Başakşehir"
+    ]
+  },
+  {
+    "isim": "Herve Tum",
+    "takimlar": [
+      "Trabzonspor",
+      "Bursaspor",
+      "Sivasspor",
+      "Kayserispor",
+      "Fenerbahçe"
+    ]
+  },
+  {
+    "isim": "Mehmet Nas",
+    "takimlar": [
+      "Fenerbahçe",
+      "Konyaspor",
+      "Kayserispor",
+      "Bursaspor",
+      "Galatasaray"
+    ]
+  },
+  {
+    "isim": "Cem Can",
+    "takimlar": [
+      "Başakşehir",
+      "Sivasspor",
+      "Antalyaspor",
+      "Konyaspor",
+      "Galatasaray"
+    ]
+  },
+  {
+    "isim": "Elyasa Süme",
+    "takimlar": [
+      "Beşiktaş",
+      "Başakşehir",
+      "Trabzonspor"
+    ]
+  },
+  {
+    "isim": "Zeki Yavru",
+    "takimlar": [
+      "Başakşehir",
+      "Fenerbahçe",
+      "Beşiktaş",
+      "Galatasaray",
+      "Kayserispor",
+      "Bursaspor"
+    ]
+  },
+  {
+    "isim": "Erkan Zengin",
+    "takimlar": [
+      "Başakşehir",
+      "Beşiktaş",
+      "Fenerbahçe"
+    ]
+  },
+  {
+    "isim": "Emre Güngör",
+    "takimlar": [
+      "Trabzonspor",
+      "Bursaspor",
+      "Sivasspor",
+      "Antalyaspor"
+    ]
+  },
+  {
+    "isim": "Ali Turan",
+    "takimlar": [
+      "Trabzonspor",
+      "Antalyaspor",
+      "Konyaspor"
+    ]
+  },
+  {
+    "isim": "Sefa Yılmaz",
+    "takimlar": [
+      "Konyaspor",
+      "Antalyaspor",
+      "Beşiktaş",
+      "Başakşehir",
+      "Galatasaray",
+      "Trabzonspor"
+    ]
+  },
+  {
+    "isim": "Ahmet Aras",
+    "takimlar": [
+      "Antalyaspor",
+      "Beşiktaş",
+      "Bursaspor",
+      "Sivasspor",
+      "Başakşehir",
+      "Galatasaray"
+    ]
+  },
+  {
+    "isim": "Onur Recep Kıvrak",
+    "takimlar": [
+      "Kayserispor",
+      "Antalyaspor",
+      "Beşiktaş",
+      "Fenerbahçe"
+    ]
+  },
+  {
+    "isim": "Ömer Aysan Barış",
+    "takimlar": [
+      "Konyaspor",
+      "Fenerbahçe",
+      "Bursaspor",
+      "Başakşehir",
+      "Antalyaspor",
+      "Galatasaray"
+    ]
+  },
+  {
+    "isim": "Ufuk Ceylan",
+    "takimlar": [
+      "Beşiktaş",
+      "Kayserispor",
+      "Başakşehir",
+      "Galatasaray",
+      "Bursaspor"
+    ]
+  },
+  {
+    "isim": "Serdar Aziz",
+    "takimlar": [
+      "Sivasspor",
+      "Trabzonspor",
+      "Beşiktaş",
+      "Fenerbahçe",
+      "Galatasaray",
+      "Bursaspor"
+    ]
+  },
+  {
+    "isim": "Aykut Akgün",
+    "takimlar": [
+      "Antalyaspor",
+      "Sivasspor",
+      "Bursaspor",
+      "Konyaspor"
+    ]
+  },
+  {
+    "isim": "Volkan Bekçi",
+    "takimlar": [
+      "Kayserispor",
+      "Konyaspor",
+      "Bursaspor",
+      "Trabzonspor",
+      "Sivasspor",
+      "Fenerbahçe"
+    ]
+  },
+  {
+    "isim": "Okan Kocuk",
+    "takimlar": [
+      "Beşiktaş",
+      "Antalyaspor",
+      "Sivasspor",
+      "Başakşehir",
+      "Kayserispor",
+      "Galatasaray"
+    ]
+  },
+  {
+    "isim": "Adem Koçak",
+    "takimlar": [
+      "Galatasaray",
+      "Antalyaspor",
+      "Fenerbahçe",
+      "Bursaspor",
+      "Beşiktaş",
+      "Trabzonspor"
+    ]
+  },
+  {
+    "isim": "İbrahim Dağaşan",
+    "takimlar": [
+      "Galatasaray",
+      "Beşiktaş",
+      "Fenerbahçe"
+    ]
+  },
+  {
+    "isim": "Ahmet Şahbaz",
+    "takimlar": [
+      "Başakşehir",
+      "Antalyaspor",
+      "Sivasspor",
+      "Konyaspor",
+      "Beşiktaş"
+    ]
+  },
+  {
+    "isim": "Tita",
+    "takimlar": [
+      "Sivasspor",
+      "Trabzonspor",
+      "Galatasaray",
+      "Antalyaspor",
+      "Konyaspor",
+      "Fenerbahçe"
+    ]
+  },
+  {
+    "isim": "Nduka Ozokwo",
+    "takimlar": [
+      "Bursaspor",
+      "Beşiktaş",
+      "Konyaspor",
+      "Antalyaspor",
+      "Başakşehir",
+      "Galatasaray"
+    ]
+  },
+  {
+    "isim": "Joseph Dixon",
+    "takimlar": [
+      "Trabzonspor",
+      "Fenerbahçe",
+      "Antalyaspor",
+      "Galatasaray"
+    ]
+  },
+  {
+    "isim": "İlyas Kahraman",
+    "takimlar": [
+      "Konyaspor",
+      "Antalyaspor",
+      "Galatasaray"
+    ]
+  },
+  {
+    "isim": "İbrahim Üzülmez",
+    "takimlar": [
+      "Sivasspor",
+      "Konyaspor",
+      "Kayserispor",
+      "Beşiktaş",
+      "Başakşehir",
+      "Fenerbahçe"
+    ]
+  },
+  {
+    "isim": "Bülent Bölükbaşı",
+    "takimlar": [
+      "Başakşehir",
+      "Sivasspor",
+      "Antalyaspor",
+      "Beşiktaş"
+    ]
+  },
+  {
+    "isim": "Ayman Abdelaziz",
+    "takimlar": [
+      "Galatasaray",
+      "Kayserispor",
+      "Beşiktaş",
+      "Sivasspor",
+      "Fenerbahçe"
+    ]
+  },
+  {
+    "isim": "Vincenzo Zanzi",
+    "takimlar": [
+      "Kayserispor",
+      "Başakşehir",
+      "Konyaspor"
+    ]
+  },
+  {
+    "isim": "Mikail Albayrak",
+    "takimlar": [
+      "Başakşehir",
+      "Konyaspor",
+      "Bursaspor",
+      "Kayserispor"
+    ]
+  },
+  {
+    "isim": "Berkay Can Değirmencioğlu",
+    "takimlar": [
+      "Trabzonspor",
+      "Başakşehir",
+      "Galatasaray",
+      "Fenerbahçe",
+      "Konyaspor",
+      "Antalyaspor"
+    ]
+  },
+  {
+    "isim": "Koray Arslan",
+    "takimlar": [
+      "Sivasspor",
+      "Başakşehir",
+      "Bursaspor",
+      "Trabzonspor"
+    ]
+  },
+  {
+    "isim": "Hasan Kabze",
+    "takimlar": [
+      "Trabzonspor",
+      "Sivasspor",
+      "Galatasaray",
+      "Kayserispor",
+      "Fenerbahçe"
+    ]
+  },
+  {
+    "isim": "Hüseyin Çimşir",
+    "takimlar": [
+      "Trabzonspor",
+      "Beşiktaş",
+      "Sivasspor",
+      "Galatasaray"
+    ]
+  },
+  {
+    "isim": "Gökçek Vederson",
+    "takimlar": [
+      "Galatasaray",
+      "Sivasspor",
+      "Beşiktaş",
+      "Antalyaspor"
+    ]
+  },
+  {
+    "isim": "Furkan Aydın",
+    "takimlar": [
+      "Fenerbahçe",
+      "Konyaspor",
+      "Kayserispor",
+      "Bursaspor",
+      "Sivasspor",
+      "Başakşehir"
+    ]
+  },
+  {
+    "isim": "Mehmet Sedef",
+    "takimlar": [
+      "Sivasspor",
+      "Başakşehir",
+      "Antalyaspor",
+      "Trabzonspor",
+      "Bursaspor"
+    ]
+  },
+  {
+    "isim": "Serkan Yanık",
+    "takimlar": [
+      "Başakşehir",
+      "Kayserispor",
+      "Sivasspor",
+      "Bursaspor"
+    ]
+  },
+  {
+    "isim": "Aykut Erçetin",
+    "takimlar": [
+      "Sivasspor",
+      "Konyaspor",
+      "Bursaspor",
+      "Trabzonspor",
+      "Fenerbahçe"
+    ]
+  },
+  {
+    "isim": "Zafer Biryol",
+    "takimlar": [
+      "Konyaspor",
+      "Beşiktaş",
+      "Trabzonspor"
+    ]
+  },
+  {
+    "isim": "Alioum Saidou",
+    "takimlar": [
+      "Trabzonspor",
+      "Fenerbahçe",
+      "Antalyaspor"
+    ]
+  },
+  {
+    "isim": "Hamit Altıntop",
+    "takimlar": [
+      "Kayserispor",
+      "Fenerbahçe",
+      "Beşiktaş",
+      "Galatasaray"
+    ]
+  },
+  {
+    "isim": "Halil Altıntop",
+    "takimlar": [
+      "Başakşehir",
+      "Konyaspor",
+      "Fenerbahçe"
+    ]
+  },
+  {
+    "isim": "Cenk Gönen",
+    "takimlar": [
+      "Başakşehir",
+      "Antalyaspor",
+      "Bursaspor",
+      "Galatasaray"
+    ]
+  },
+  {
+    "isim": "Ersan Gülüm",
+    "takimlar": [
+      "Kayserispor",
+      "Konyaspor",
+      "Antalyaspor",
+      "Bursaspor",
+      "Başakşehir",
+      "Trabzonspor"
+    ]
+  },
+  {
+    "isim": "Sinan Kaloğlu",
+    "takimlar": [
+      "Galatasaray",
+      "Fenerbahçe",
+      "Bursaspor"
+    ]
+  },
+  {
+    "isim": "Sami Yusuf",
+    "takimlar": [
+      "Trabzonspor",
+      "Antalyaspor",
+      "Galatasaray",
+      "Bursaspor",
+      "Beşiktaş",
+      "Sivasspor"
+    ]
+  },
+  {
+    "isim": "Ahmet Dursun",
+    "takimlar": [
+      "Beşiktaş",
+      "Başakşehir",
+      "Sivasspor",
+      "Bursaspor",
+      "Fenerbahçe",
+      "Antalyaspor"
+    ]
+  },
+  {
+    "isim": "Okan Buruk",
+    "takimlar": [
+      "Kayserispor",
+      "Konyaspor",
+      "Antalyaspor",
+      "Sivasspor",
+      "Bursaspor"
+    ]
+  },
+  {
+    "isim": "Orhan Ak",
+    "takimlar": [
+      "Antalyaspor",
+      "Konyaspor",
+      "Galatasaray",
+      "Trabzonspor",
+      "Beşiktaş"
+    ]
+  },
+  {
+    "isim": "Cihan Can",
+    "takimlar": [
+      "Sivasspor",
+      "Antalyaspor",
+      "Bursaspor",
+      "Beşiktaş",
+      "Galatasaray",
+      "Fenerbahçe"
+    ]
+  },
+  {
+    "isim": "Oğuz Dağlaroğlu",
+    "takimlar": [
+      "Galatasaray",
+      "Kayserispor",
+      "Bursaspor",
+      "Sivasspor"
+    ]
+  },
+  {
+    "isim": "Mehmet Topuz",
+    "takimlar": [
+      "Beşiktaş",
+      "Bursaspor",
+      "Başakşehir"
+    ]
+  },
+  {
+    "isim": "İbrahim Toraman",
+    "takimlar": [
+      "Beşiktaş",
+      "Fenerbahçe",
+      "Sivasspor",
+      "Trabzonspor",
+      "Başakşehir",
+      "Galatasaray"
+    ]
+  },
+  {
+    "isim": "Ümit Karan",
+    "takimlar": [
+      "Galatasaray",
+      "Antalyaspor",
+      "Trabzonspor",
+      "Sivasspor",
+      "Beşiktaş",
+      "Kayserispor"
+    ]
+  },
+  {
+    "isim": "Okan Derici",
+    "takimlar": [
+      "Beşiktaş",
+      "Kayserispor",
+      "Antalyaspor",
+      "Konyaspor",
+      "Sivasspor"
+    ]
+  },
+  {
+    "isim": "İsmail Köybaşı",
+    "takimlar": [
+      "Başakşehir",
+      "Antalyaspor",
+      "Trabzonspor",
+      "Bursaspor"
+    ]
+  },
+  {
+    "isim": "Musa Aydın",
+    "takimlar": [
+      "Galatasaray",
+      "Fenerbahçe",
+      "Kayserispor",
+      "Trabzonspor",
+      "Sivasspor",
+      "Konyaspor"
+    ]
+  },
+  {
+    "isim": "Uğur Uçar",
+    "takimlar": [
+      "Kayserispor",
+      "Galatasaray",
+      "Fenerbahçe",
+      "Antalyaspor",
+      "Sivasspor"
+    ]
+  },
+  {
+    "isim": "Mehmet Polat",
+    "takimlar": [
+      "Bursaspor",
+      "Kayserispor",
+      "Trabzonspor",
+      "Sivasspor",
+      "Antalyaspor"
+    ]
+  }
+]

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Süper Lig Quiz Battle</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Nickname Entry Screen -->
+        <div id="nicknameScreen" class="screen active">
+            <div class="card">
+                <h1>⚽ Süper Lig Quiz Battle</h1>
+                <p>Test your knowledge of Turkish football!</p>
+                <input type="text" id="nicknameInput" placeholder="Enter your nickname" maxlength="20">
+                <button id="joinGameBtn">Join Game</button>
+            </div>
+        </div>
+
+        <!-- Waiting Screen -->
+        <div id="waitingScreen" class="screen">
+            <div class="card">
+                <div class="online-status">
+                    <div class="online-indicator"></div>
+                    <span id="onlineCount">0</span> players online
+                </div>
+                
+                <h2 id="searchingTitle">🔍 Searching for game</h2>
+                <div class="searching-animation">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+                <p id="waitingMessage">Looking for an opponent...</p>
+                <button id="cancelWaitBtn">Cancel</button>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="gameScreen" class="screen">
+            <div class="game-header">
+                <div class="player-info">
+                    <span id="player1Name">Player 1</span>
+                    <span id="player1Score" class="score">0</span>
+                </div>
+                <div class="vs">VS</div>
+                <div class="player-info">
+                    <span id="player2Name">Player 2</span>
+                    <span id="player2Score" class="score">0</span>
+                </div>
+            </div>
+
+            <div class="question-container">
+                <h3>Which team have both players played for?</h3>
+                <div class="players-display">
+                    <div class="player-card">
+                        <span id="player1Display">Player 1</span>
+                    </div>
+                    <div class="player-card">
+                        <span id="player2Display">Player 2</span>
+                    </div>
+                </div>
+                
+                <div class="options-container">
+                    <button class="option-btn" data-team="0"></button>
+                    <button class="option-btn" data-team="1"></button>
+                    <button class="option-btn" data-team="2"></button>
+                    <button class="option-btn" data-team="3"></button>
+                    <button class="option-btn" data-team="4"></button>
+                </div>
+
+                <div id="feedback" class="feedback"></div>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="resultScreen" class="screen">
+            <div class="card">
+                <h2 id="resultTitle">Game Over!</h2>
+                <div id="finalScores"></div>
+                <button id="playAgainBtn">Play Again</button>
+                <button id="homeBtn">Home</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
