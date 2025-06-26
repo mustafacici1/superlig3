@@ -27,7 +27,8 @@ window.addEventListener('DOMContentLoaded', () => {
     gameId: null,
     playerData: [],
     listeners: [],
-    isHost: false
+    isHost: false,
+    hasAnswered: false
   };
 
   // Ekranlar
@@ -193,59 +194,89 @@ window.addEventListener('DOMContentLoaded', () => {
     // Butonları güncelle
     elements.optionBtns.forEach((btn, i) => {
       btn.textContent = q.options[i] || '---';
-      btn.disabled = false;
+      
+      // Cevap verildiyse butonları kilitle
+      if (gameData.answers.first || gameData.answers.second) {
+        btn.disabled = true;
+      } else {
+        btn.disabled = false;
+      }
     });
     
-    elements.feedback.textContent = '';
+    // Geri bildirim
+    if (gameData.answers.first) {
+      const firstAnswer = gameData.answers.first;
+      const isCorrect = firstAnswer.idx === q.correctIndex;
+      const playerName = firstAnswer.id === gameData.player1.id 
+        ? gameData.player1.nickname 
+        : gameData.player2.nickname;
+      
+      elements.feedback.textContent = `${playerName} seçti: ${q.options[firstAnswer.idx]}. ${isCorrect ? '✅ Doğru' : '❌ Yanlış'}`;
+    }
+    
+    // İkinci cevap verildiyse
+    if (gameData.answers.first && gameData.answers.second) {
+      setTimeout(() => {
+        db.ref(`games/${gameState.gameId}`).update({
+          currentQuestion: generateQuestion(),
+          answers: { first: null, second: null }
+        });
+      }, 2000);
+    }
   }
 
   async function selectAnswer(idx) {
-    // Butonu hemen kilitle
-    elements.optionBtns.forEach(btn => btn.disabled = true);
+    // Kendi cevabımızı işaretle
+    gameState.hasAnswered = true;
     
     const ref = db.ref(`games/${gameState.gameId}`);
     const snap = await ref.once('value');
     const gameData = snap.val();
     
-    // Oyun verisi veya cevaplar yoksa iptal et
+    // Oyun verisi yoksa iptal et
     if (!gameData || !gameData.answers) return;
     
-    // İlk cevap zaten verilmişse iptal et
-    if (gameData.answers.first) return;
-    
-    // Cevabı gönder
-    await ref.child('answers/first').set({
-      id: gameState.playerId,
-      idx
-    });
-    
-    // Doğru cevabı kontrol et
-    const isCorrect = idx === gameData.currentQuestion.correctIndex;
-    const scores = { ...gameData.scores };
-    
-    // Puan güncelle
-    if (gameState.playerId === gameData.player1.id) {
-      scores.player1 += isCorrect ? 1 : 0;
-    } else {
-      scores.player2 += isCorrect ? 1 : 0;
+    // İlk cevap daha verilmediyse
+    if (!gameData.answers.first) {
+      await ref.child('answers/first').set({
+        id: gameState.playerId,
+        idx
+      });
+      
+      // Puan güncelle
+      const isCorrect = idx === gameData.currentQuestion.correctIndex;
+      const scores = { ...gameData.scores };
+      
+      if (gameState.playerId === gameData.player1.id) {
+        scores.player1 += isCorrect ? 1 : -1;
+      } else {
+        scores.player2 += isCorrect ? 1 : -1;
+      }
+      
+      await ref.child('scores').set(scores);
+    } 
+    // İlk cevap verilmiş ama ikinci cevap verilmemişse
+    else if (!gameData.answers.second) {
+      await ref.child('answers/second').set({
+        id: gameState.playerId,
+        idx
+      });
+      
+      // Puan güncelle (sadece ikinci oyuncu için)
+      const isCorrect = idx === gameData.currentQuestion.correctIndex;
+      const scores = { ...gameData.scores };
+      
+      if (gameState.playerId === gameData.player1.id) {
+        scores.player1 += isCorrect ? 1 : -1;
+      } else {
+        scores.player2 += isCorrect ? 1 : -1;
+      }
+      
+      await ref.child('scores').set(scores);
     }
     
-    await ref.child('scores').set(scores);
-    
-    // Geri bildirim göster
-    const playerName = gameState.playerId === gameData.player1.id 
-      ? gameData.player1.nickname 
-      : gameData.player2.nickname;
-    
-    elements.feedback.textContent = `${playerName} seçti: ${gameData.currentQuestion.options[idx]}. ${isCorrect ? '✅ Doğru' : '❌ Yanlış'}`;
-    
-    // 2 saniye sonra yeni soruya geç
-    setTimeout(async () => {
-      await ref.update({
-        currentQuestion: generateQuestion(),
-        answers: { first: null }
-      });
-    }, 2000);
+    // Butonları kilitle
+    elements.optionBtns.forEach(btn => btn.disabled = true);
   }
 
   async function joinGame() {
@@ -276,7 +307,7 @@ window.addEventListener('DOMContentLoaded', () => {
         player2: { id: gameState.playerId, nickname: nick },
         scores: { player1: 0, player2: 0 },
         currentQuestion: generateQuestion(),
-        answers: { first: null }
+        answers: { first: null, second: null }
       };
       
       gameState.gameId = gameId;
