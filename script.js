@@ -3,7 +3,7 @@
 window.addEventListener('DOMContentLoaded', () => {
   console.log('DOM yüklendi, script başlıyor.');
 
-  // Firebase ayarları
+  // --- Firebase Ayarları ---
   const firebaseConfig = {
     apiKey: "AIzaSyBJzRpMjBJ08zdbm8rPiYvr2UuE7taO0X4",
     authDomain: "futbolsite-7494b.firebaseapp.com",
@@ -14,39 +14,32 @@ window.addEventListener('DOMContentLoaded', () => {
     appId: "1:307816905692:web:7ee735beccab7a48512d19",
     measurementId: "G-RFWMEVQ639"
   };
-  
-  // Firebase kontrolü
-  if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-  }
+  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
 
-  // Oyun durumu
+  // --- Oyun Durumu ---
   const gameState = {
     playerId: null,
     gameId: null,
-    playerData: [],
-    listeners: [],
     isHost: false,
-    hasAnswered: false
+    playerData: [],
+    listeners: []
   };
 
-  // Ekranlar
+  // --- Ekran Yönetimi ---
   const screens = {
-    nickname: document.getElementById('nicknameScreen'),
-    waiting:  document.getElementById('waitingScreen'),
-    game:     document.getElementById('gameScreen'),
-    result:   document.getElementById('resultScreen')
+    nickname:  document.getElementById('nicknameScreen'),
+    waiting:   document.getElementById('waitingScreen'),
+    game:      document.getElementById('gameScreen'),
+    result:    document.getElementById('resultScreen')
   };
-  
   function showScreen(name) {
     Object.values(screens).forEach(s => s.classList.remove('active'));
     screens[name].classList.add('active');
-    console.log('Ekran:', name);
   }
 
-  // DOM elementleri
-  const elements = {
+  // --- DOM Öğeleri ---
+  const elems = {
     nicknameInput:  document.getElementById('nicknameInput'),
     joinGameBtn:    document.getElementById('joinGameBtn'),
     cancelWaitBtn:  document.getElementById('cancelWaitBtn'),
@@ -62,82 +55,70 @@ window.addEventListener('DOMContentLoaded', () => {
     optionBtns:     Array.from(document.querySelectorAll('.option-btn')),
     feedback:       document.getElementById('feedback'),
     playAgainBtn:   document.getElementById('playAgainBtn'),
-    homeBtn:        document.getElementById('homeBtn')
+    homeBtn:        document.getElementById('homeBtn'),
+    resultTitle:    document.getElementById('resultTitle'),
+    finalScores:    document.getElementById('finalScores')
   };
-  
-  // Butonları başlangıçta devre dışı bırak
-  elements.optionBtns.forEach(btn => btn.disabled = true);
 
-  // JSON yükleme
+  // --- Yardımcı Fonksiyonlar ---
+  function genId() {
+    return db.ref().push().key;
+  }
+
   async function loadPlayerData() {
     try {
       const res = await fetch('./superlig_oyuncular.json');
       const raw = await res.json();
-      gameState.playerData = raw
-        .map(p => {
-          if (p.name && p.teams_history) return p;
-          if (p.isim && Array.isArray(p.takimlar)) {
-            return { name: p.isim, teams_history: p.takimlar.map(t => ({team: t})) };
-          }
-          return null;
-        })
-        .filter(Boolean);
+      gameState.playerData = raw.filter(p => p.name && p.teams_history);
       console.log('Oyuncu sayısı:', gameState.playerData.length);
-    } catch(err) {
+    } catch (err) {
       console.error('JSON yükleme hatası:', err);
       alert('Veri yüklenemedi. Lütfen sayfayı yenileyin.');
     }
   }
 
-  // ID üretici
-  function genId() { return db.ref().push().key; }
-
-  // Takım bulma
-  function findCommon(p1, p2) {
-    if (!p1 || !p2 || !p1.teams_history || !p2.teams_history) return [];
-    const s = new Set(p1.teams_history.map(t => t.team));
-    return p2.teams_history.map(t => t.team).filter(t => s.has(t));
+  function shuffle(arr) {
+    return arr.sort(() => Math.random() - 0.5);
   }
 
   function allTeams() {
     return Array.from(new Set(
-      gameState.playerData.flatMap(p => 
-        p.teams_history ? p.teams_history.map(t => t.team) : []
-      )
+      gameState.playerData.flatMap(p => p.teams_history.map(t => t.team))
     ));
   }
 
-  function shuffle(a) { 
-    return a.sort(() => Math.random() - 0.5); 
+  function findCommon(p1, p2) {
+    const set1 = new Set(p1.teams_history.map(t => t.team));
+    return p2.teams_history.map(t => t.team).filter(team => set1.has(team));
   }
 
-  // Soru üretme
   function generateQuestion() {
     for (let i = 0; i < 100; i++) {
-      const p1 = gameState.playerData[Math.floor(Math.random() * gameState.playerData.length)];
-      const p2 = gameState.playerData[Math.floor(Math.random() * gameState.playerData.length)];
-      
+      const [p1, p2] = shuffle(gameState.playerData).slice(0, 2);
       if (!p1 || !p2 || p1.name === p2.name) continue;
-      
       const commons = findCommon(p1, p2);
-      if (commons.length === 0) continue;
-      
+      if (!commons.length) continue;
       const correct = commons[Math.floor(Math.random() * commons.length)];
-      const all = allTeams();
-      const wrongs = shuffle(all.filter(t => t !== correct)).slice(0, 4);
-      
-      const opts = shuffle([correct, ...wrongs]);
+      const wrongs = shuffle(
+        allTeams().filter(t => t !== correct)
+      ).slice(0, 4);
+      const options = shuffle([correct, ...wrongs]);
       return {
         player1: p1.name,
         player2: p2.name,
-        options: opts,
-        correctIndex: opts.indexOf(correct)
+        options,
+        correctIndex: options.indexOf(correct)
       };
     }
-    return generateQuestion();
+    // Yeterli soru yoksa boş dön
+    return {
+      player1: '', player2: '',
+      options: ['', '', '', '', ''],
+      correctIndex: 0
+    };
   }
 
-  // Presence & Matchmaking
+  // --- Presence & Matchmaking ---
   function setupPresence(nick) {
     gameState.playerId = genId();
     const ref = db.ref(`online/${gameState.playerId}`);
@@ -148,198 +129,146 @@ window.addEventListener('DOMContentLoaded', () => {
   function listenOnline() {
     const ref = db.ref('online');
     const fn = ref.on('value', snap => {
-      const onlinePlayers = snap.val() || {};
-      const count = Object.keys(onlinePlayers).length;
-      
-      elements.onlineCount.textContent = count;
-      elements.searchingTitle.textContent = count <= 1 ? '🔍 Bekleniyor' : '🎯 Bulundu';
-      elements.waitingMessage.textContent = count <= 1 ? 'Aranıyor...' : 'Hazır!';
+      const count = snap.numChildren();
+      elems.onlineCount.textContent = count;
+      elems.searchingTitle.textContent = count > 1 ? '🎯 Rakip Bulundu' : '🔍 Rakip Aranıyor';
+      elems.waitingMessage.textContent = count > 1 ? 'Hazır!' : 'Bekleniyor...';
     });
-    gameState.listeners.push({ ref, fn, event: 'value' });
+    gameState.listeners.push({ ref, fn });
   }
 
-  // Oyun dinle ve göster
-  function listenGame(gid) {
-    const ref = db.ref(`games/${gid}`);
+  function listenGame(gameId) {
+    const ref = db.ref(`games/${gameId}`);
     const fn = ref.on('value', snap => {
-      const gameData = snap.val();
-      if (!gameData) return;
-
-      // Oyun başladıysa ekranı değiştir
-      if (gameData.player1 && gameData.player2) {
-        showScreen('game');
-      }
-      
-      updateDisplay(gameData);
+      const data = snap.val();
+      if (!data) return;
+      // Oyuna geç
+      if (data.player1 && data.player2) showScreen('game');
+      updateDisplay(data);
     });
-    gameState.listeners.push({ ref, fn, event: 'value' });
+    gameState.listeners.push({ ref, fn });
   }
 
-  function updateDisplay(gameData) {
-    // Oyun verileri yüklenene kadar bekle
-    if (!gameData || !gameData.currentQuestion) return;
+  function cleanup() {
+    gameState.listeners.forEach(l => l.ref.off('value', l.fn));
+    if (gameState.playerId) {
+      db.ref(`online/${gameState.playerId}`).remove();
+    }
+    if (gameState.isHost && gameState.gameId) {
+      db.ref(`waiting/${gameState.gameId}`).remove();
+    }
+    gameState.listeners = [];
+  }
 
-    const q = gameData.currentQuestion;
-    
-    // Oyuncu bilgileri
-    elements.player1Name.textContent = gameData.player1.nickname;
-    elements.player2Name.textContent = gameData.player2.nickname;
-    elements.player1Score.textContent = gameData.scores.player1;
-    elements.player2Score.textContent = gameData.scores.player2;
-    
-    // Soru bilgileri
-    elements.player1Display.textContent = q.player1;
-    elements.player2Display.textContent = q.player2;
+  // --- Ekranı Güncelle ---
+  function updateDisplay(data) {
+    // İsimler & skorlar
+    elems.player1Name.textContent = data.player1.nickname;
+    elems.player2Name.textContent = data.player2.nickname;
+    elems.player1Score.textContent = data.scores.player1;
+    elems.player2Score.textContent = data.scores.player2;
 
-    // Butonları güncelle ve renklendirmeyi sıfırla
-    elements.optionBtns.forEach((btn, i) => {
-      btn.textContent = q.options[i] || '---';
-      btn.classList.remove('correct', 'incorrect', 'selected');
-      btn.disabled = false;
+    // Player display
+    elems.player1Display.textContent = data.currentQuestion.player1;
+    elems.player2Display.textContent = data.currentQuestion.player2;
+
+    // Şıklar
+    const bothAnswered = data.answers.first && data.answers.second;
+    elems.optionBtns.forEach((btn, idx) => {
+      btn.textContent = data.currentQuestion.options[idx];
+      btn.disabled = bothAnswered;
+      btn.classList.remove('correct', 'incorrect');
+      // Eğer bir cevap verilmişse doğruyu işaretle
+      if (data.answers.first || data.answers.second) {
+        if (idx === data.currentQuestion.correctIndex) {
+          btn.classList.add('correct');
+        }
+      }
     });
-    
-    // Cevap verildiyse butonları kilitle ve renklendir
-    if (gameData.answers.first || gameData.answers.second) {
-      // Doğru cevabı yeşil yap
-      elements.optionBtns[q.correctIndex].classList.add('correct');
-      
-      // İlk cevap verildiyse
-      if (gameData.answers.first) {
-        const firstIdx = gameData.answers.first.idx;
-        const isCorrect = firstIdx === q.correctIndex;
-        elements.optionBtns[firstIdx].classList.add(isCorrect ? 'correct' : 'incorrect', 'selected');
-      }
-      
-      // İkinci cevap verildiyse
-      if (gameData.answers.second) {
-        const secondIdx = gameData.answers.second.idx;
-        const isCorrect = secondIdx === q.correctIndex;
-        elements.optionBtns[secondIdx].classList.add(isCorrect ? 'correct' : 'incorrect', 'selected');
-      }
-      
-      // Butonları kilitle
-      elements.optionBtns.forEach(btn => btn.disabled = true);
-    }
-    
+
     // Geri bildirim
-    if (gameData.answers.first) {
-      const firstAnswer = gameData.answers.first;
-      const isCorrect = firstAnswer.idx === q.correctIndex;
-      const playerName = firstAnswer.id === gameData.player1.id 
-        ? gameData.player1.nickname 
-        : gameData.player2.nickname;
-      
-      elements.feedback.textContent = `${playerName} seçti: ${q.options[firstAnswer.idx]}. ${isCorrect ? '✅ Doğru' : '❌ Yanlış'}`;
+    if (data.answers.first) {
+      const ans = data.answers.first;
+      const name = ans.id === data.player1.id
+        ? data.player1.nickname
+        : data.player2.nickname;
+      const isCorrect = ans.idx === data.currentQuestion.correctIndex;
+      elems.feedback.textContent = `${name} seçti: ${data.currentQuestion.options[ans.idx]} – ${isCorrect ? '✅ Doğru' : '❌ Yanlış'}`;
+      elems.feedback.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+    } else {
+      elems.feedback.textContent = '';
+      elems.feedback.className = 'feedback';
     }
-    
-    // İkinci cevap verildiyse
-    if (gameData.answers.first && gameData.answers.second) {
+  }
+
+  // --- Cevap Seçimi ---
+  async function selectAnswer(idx) {
+    const ref = db.ref(`games/${gameState.gameId}`);
+    const snap = await ref.once('value');
+    const data = snap.val();
+    if (!data) return;
+
+    const target = data.answers.first ? 'second' : 'first';
+    // Cevabı kaydet
+    await ref.child(`answers/${target}`).set({
+      id: gameState.playerId,
+      idx
+    });
+
+    // Puan güncelle
+    const correct = data.currentQuestion.correctIndex;
+    const delta = idx === correct ? 1 : -1;
+    const key = gameState.playerId === data.player1.id ? 'player1' : 'player2';
+    const newScores = { ...data.scores };
+    newScores[key] += delta;
+    await ref.child('scores').set(newScores);
+
+    // Eğer ikinci cevapsa yeni soruya geç
+    if (target === 'second') {
       setTimeout(() => {
-        db.ref(`games/${gameState.gameId}`).update({
+        ref.update({
           currentQuestion: generateQuestion(),
           answers: { first: null, second: null }
         });
-        elements.feedback.textContent = '';
       }, 2000);
     }
   }
 
-  async function selectAnswer(idx) {
-    // Kendi cevabımızı işaretle
-    gameState.hasAnswered = true;
-    
-    const ref = db.ref(`games/${gameState.gameId}`);
-    const snap = await ref.once('value');
-    const gameData = snap.val();
-    
-    // Oyun verisi yoksa iptal et
-    if (!gameData || !gameData.answers) return;
-    
-    // İlk cevap daha verilmediyse
-    if (!gameData.answers.first) {
-      await ref.child('answers/first').set({
-        id: gameState.playerId,
-        idx
-      });
-      
-      // Puan güncelle
-      const isCorrect = idx === gameData.currentQuestion.correctIndex;
-      const scores = { ...gameData.scores };
-      
-      if (gameState.playerId === gameData.player1.id) {
-        scores.player1 += isCorrect ? 1 : -1;
-      } else {
-        scores.player2 += isCorrect ? 1 : -1;
-      }
-      
-      await ref.child('scores').set(scores);
-    } 
-    // İlk cevap verilmiş ama ikinci cevap verilmemişse
-    else if (!gameData.answers.second) {
-      await ref.child('answers/second').set({
-        id: gameState.playerId,
-        idx
-      });
-      
-      // Puan güncelle (sadece ikinci oyuncu için)
-      const isCorrect = idx === gameData.currentQuestion.correctIndex;
-      const scores = { ...gameData.scores };
-      
-      if (gameState.playerId === gameData.player1.id) {
-        scores.player1 += isCorrect ? 1 : -1;
-      } else {
-        scores.player2 += isCorrect ? 1 : -1;
-      }
-      
-      await ref.child('scores').set(scores);
-    }
-    
-    // Butonları kilitle
-    elements.optionBtns.forEach(btn => btn.disabled = true);
-  }
-
+  // --- Oyuna Katıl / Eşleştirme ---
   async function joinGame() {
-    const nick = elements.nicknameInput.value.trim();
-    if (!nick) return alert('Lütfen bir takma ad girin');
-    
+    const nick = elems.nicknameInput.value.trim();
+    if (!nick) return alert('Lütfen bir takma ad girin.');
+
     await loadPlayerData();
     setupPresence(nick);
     listenOnline();
 
     const waitingRef = db.ref('waiting');
-    const snapshot = await waitingRef.once('value');
-    const waitingGames = snapshot.val() || {};
+    const snap = await waitingRef.once('value');
+    const list = snap.val() || {};
 
-    // Bekleyen oyun var mı kontrol et
-    const waitingGameIds = Object.keys(waitingGames);
-    
-    if (waitingGameIds.length > 0) {
-      const gameId = waitingGameIds[0];
-      const waitingGame = waitingGames[gameId];
-      
-      // Bekleyen oyunu kaldır
+    if (Object.keys(list).length) {
+      // Mevcut bekleyen oyunu al
+      const gameId = Object.keys(list)[0];
+      const host = list[gameId].player1;
       await waitingRef.child(gameId).remove();
-      
-      // Yeni oyun oluştur
+
       const gameData = {
-        player1: waitingGame.player1,
+        player1: host,
         player2: { id: gameState.playerId, nickname: nick },
         scores: { player1: 0, player2: 0 },
         currentQuestion: generateQuestion(),
         answers: { first: null, second: null }
       };
-      
       gameState.gameId = gameId;
       await db.ref(`games/${gameId}`).set(gameData);
       listenGame(gameId);
-      showScreen('game');
     } else {
       // Yeni bekleme oluştur
       const gameId = genId();
       await waitingRef.child(gameId).set({
         player1: { id: gameState.playerId, nickname: nick }
       });
-      
       gameState.gameId = gameId;
       gameState.isHost = true;
       listenGame(gameId);
@@ -347,41 +276,18 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function cleanup() {
-    // Tüm dinleyicileri temizle
-    gameState.listeners.forEach(listener => {
-      listener.ref.off(listener.event, listener.fn);
-    });
-    
-    // Online durumu kaldır
-    if (gameState.playerId) {
-      db.ref(`online/${gameState.playerId}`).remove();
-    }
-    
-    // Bekleme durumunu temizle
-    if (gameState.isHost && gameState.gameId) {
-      db.ref(`waiting/${gameState.gameId}`).remove();
-    }
-    
-    // Oyun durumunu sıfırla
-    gameState.listeners = [];
-  }
-
-  // Event'ler
-  elements.joinGameBtn.addEventListener('click', joinGame);
-  
-  elements.cancelWaitBtn.addEventListener('click', () => {
+  // --- Event Listeners ---
+  elems.joinGameBtn.addEventListener('click', joinGame);
+  elems.cancelWaitBtn.addEventListener('click', () => {
     cleanup();
     showScreen('nickname');
   });
-  
-  elements.playAgainBtn.addEventListener('click', () => location.reload());
-  elements.homeBtn.addEventListener('click', () => location.reload());
-  
-  elements.optionBtns.forEach((btn, index) => {
-    btn.addEventListener('click', () => selectAnswer(index));
-  });
+  elems.optionBtns.forEach((btn, idx) =>
+    btn.addEventListener('click', () => selectAnswer(idx))
+  );
+  elems.playAgainBtn.addEventListener('click', () => location.reload());
+  elems.homeBtn.addEventListener('click', () => location.reload());
 
-  // Başlangıç
+  // Başlangıç ekranı
   showScreen('nickname');
 });
